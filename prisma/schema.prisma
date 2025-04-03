@@ -1,0 +1,54 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model TravelSpot {
+  id          String       @id @default(cuid())
+  name        String
+  description String
+  latitude    Float
+  longitude   Float
+  country     String
+  city        String
+  category    String
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+  reels       InstagramReel[]
+  userSubmissions UserSubmission[]
+}
+
+model InstagramReel {
+  id          String       @id @default(cuid())
+  reelUrl     String       @unique
+  description String
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+  travelSpots TravelSpot[]
+}
+
+model UserSubmission {
+  id          String       @id @default(cuid())
+  name        String
+  description String
+  latitude    Float
+  longitude   Float
+  country     String
+  city        String
+  category    String
+  reelUrl     String?
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+  travelSpot  TravelSpot?  @relation(fields: [travelSpotId], references: [id])
+  travelSpotId String?
+}
